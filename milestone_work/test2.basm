@@ -1,0 +1,116 @@
+    ORG     0x010
+ADDRES: 
+    WORD    0x687
+POINTER:
+    WORD    ?
+I:  WORD    0x0
+J:  WORD    0x0
+dimI:
+    WORD    0x3
+dimJ:
+    WORD    0x3
+RESULT:
+    WORD    0x0
+
+START:
+    CLA
+    ST      RESULT
+    LD      ADDRES
+    ST      POINTER
+
+    LD      #0x0
+    ST      I
+CYCLE1:
+    LD      (I)+
+    LD      dimI
+    CMP     I
+    BLT     STP
+
+    LD      #0x0
+    ST      J
+    CYCLE2:
+        LD      (J)+
+        LD      dimJ
+        CMP     J
+        BLT     CYCLE1
+
+        LD      (POINTER)+
+        ST      ARGUMENT
+        CALL    CHECK_ITER
+
+        JUMP    CYCLE2
+STP:
+    HLT
+
+CHECK_ITER:
+    LD      I
+    DIV3:
+        SUB     #0x3
+        BZS     CHECK_J
+        BNS     FINISH
+        JUMP    DIV3
+CHECK_J:
+    LD      J
+    ROR
+    BCS     FINISH
+
+    CALL    FUNC
+    CALL    XOR
+FINISH:
+    RET
+
+ARGUMENT:
+    WORD    ?
+CONST1:
+    WORD    23479
+CONST2:
+    WORD    18457
+FUNC:
+    LD      ARGUMENT
+    ADD     ARGUMENT
+    ;BVS     ERR
+    ADD     ARGUMENT
+    ;BVS     ERR
+    ADD     CONST1
+    ;BVS     ERR
+    ST      ARGUMENT
+    RET
+ERR:
+    LD      CONST2
+    ST      ARGUMENT
+    RET
+
+XOR_PART1:
+    WORD   ?
+XOR:
+    LD      ARGUMENT
+    NOT
+    AND     RESULT
+    ST      XOR_PART1
+
+    LD      RESULT
+    NOT
+    AND     ARGUMENT
+
+    OR      XOR_PART1
+
+    ST      RESULT
+
+    RET
+
+    ORG     0x687
+    WORD    0x0001, 0x0002, 0x0003
+    WORD    0x0004, 0x0005, 0x0006
+    WORD    0x0007, 0x0008, 0x0009 
+            ; 5bcf
+            ; 0101 1011 1100 1111
+            ; result
+            ; 0000 0000 0000 0000
+
+            ; 1010 0100 0011 0000 -arg
+            ; 0000 0000 0000 0000 res
+            ; 0000 0000 0000 0000
+
+            ; 0101 1011 1100 1111 arg
+            ; 1111 1111 1111 1111 -res
+            ; 0101 1011 1100 1111

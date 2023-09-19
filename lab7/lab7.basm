@@ -1,0 +1,18 @@
+ORG 0x410
+VALUE1: WORD    0x1234
+VALUE2: WORD    0xF0F0
+RESULT: WORD    ?
+
+ORG 0x427
+START:
+    LD      VALUE1
+    PUSH
+    LD      VALUE2
+    PUSH
+    WORD    0x0F10
+    POP
+    OUT     2
+    ST      RESULT
+
+    HLT
+ 

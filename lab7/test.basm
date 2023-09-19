@@ -1,0 +1,102 @@
+ORG     0x010
+
+ARG1:   WORD    0xFFFF
+ARG2:   WORD    0x0000
+
+ARG3:   WORD    0x1234
+ARG4:   WORD    0x1234
+
+ARG5:   WORD    0xF91A
+ARG6:   WORD    0x3C78
+
+CHECK1: WORD    0x0
+CHECK2: WORD    0x0
+CHECK3: WORD    0x0
+
+FINAL:  WORD    0x0
+
+RES1:   WORD    0x0000
+RES2:   WORD    0x1234
+RES3:   WORD    0x3818
+
+TESTRES1: WORD  0x0
+TESTRES2: WORD  0x0
+TESTRES3: WORD  0x0
+
+START:  CLA     
+        CALL    TEST1
+        CALL    TEST2
+        CALL    TEST3
+        LD      #0x1
+        AND     CHECK1
+        AND     CHECK2
+        AND     CHECK3
+        ST      FINAL
+STOP:   HLT
+ 
+TEST1:  LD      ARG1
+        PUSH
+        LD      ARG2
+        PUSH
+        CLA
+        WORD    0x0F10 ; ANDSP
+        POP
+        HLT
+        ST      TESTRES1
+        CMP     RES1
+        BEQ     DONE1
+ERROR1: POP
+        POP
+        CLA
+        RET
+DONE1:  POP
+        POP 
+        LD      #0x1
+        ST      CHECK1
+        CLA 
+        RET 
+
+   
+TEST2:  LD      ARG3
+        PUSH
+        LD      ARG4
+        PUSH
+        CLA
+        WORD    0x0F10 ; ANDSP  
+        POP
+        HLT
+        ST      TESTRES2
+        CMP     RES2
+        BEQ     DONE2
+ERROR2: POP
+        POP
+        CLA
+        RET
+DONE2:  POP
+        POP
+        LD      #0x1
+        ST      CHECK2
+        CLA
+        RET
+     
+TEST3:  LD      ARG5
+        PUSH
+        LD      ARG6
+        PUSH
+        CLA
+        WORD    0x0F10 ; ANDSP
+        POP
+        HLT
+        ST      TESTRES3
+        CMP     RES3
+        BEQ     DONE3
+ERROR3: POP
+        POP
+        CLA
+        RET
+DONE3:  POP
+        POP
+        LD      #0x1
+        ST      CHECK3
+        CLA
+        RET

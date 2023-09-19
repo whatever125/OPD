@@ -1,0 +1,70 @@
+ORG     0x010
+ADDRES:
+    WORD    0x687   ; 010
+POINTER1:
+    WORD    ?        ; 011
+POINTER2:
+    WORD    ?        ; 012
+I:  WORD    ?        ; 013
+dimI:
+    WORD    4        ; 014
+RES1:
+    WORD    ?        ; 015
+RES2:
+    WORD    ?        ; 016
+
+START:
+    CLA
+    ST      RES1
+    ST      RES2
+
+    LD      ADDRES
+    ST      POINTER1
+    INC
+    ST      POINTER2
+
+    LD      #0x0
+    ST      I
+CYCLE1:
+    LD      (I)+
+    LD      dimI
+    CMP     I
+    BLT     STP
+
+    CALL    CHECK_ARGS
+
+    LD      (POINTER1)+
+    LD      (POINTER1)+
+    LD      (POINTER2)+
+    LD      (POINTER2)+
+
+    JUMP    CYCLE1
+
+STP:
+    HLT
+
+CHECK_ARGS:
+    LD      I
+    ROR
+    BCS     RETURN1
+    
+    CALL    FUNC
+
+RETURN1:
+    RET
+
+FUNC:
+    LD      (POINTER2)
+    ADD     RES2
+    ST      RES2
+    LD      (POINTER1)
+    ADC     RES1
+    ST      RES1
+RETURN2:
+    RET
+
+    ORG     0x687
+    WORD    0x0000, 0x0001
+    WORD    0x0000, 0x0001
+    WORD    0x0000, 0xFFFF
+    WORD    0x0000, 0xFFFF
