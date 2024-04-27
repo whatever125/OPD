@@ -6,19 +6,28 @@ POINTER:
 I:  WORD    0x0
 J:  WORD    0x0
 dimI:
-    WORD    0x3
+    WORD    0x6
 dimJ:
-    WORD    0x3
+    WORD    0x11
 RESULT:
     WORD    0x0
+SI:
+    word 0x0
 
 START:
     CLA
     ST      RESULT
     LD      ADDRES
     ST      POINTER
+    LD dimI
+    ADD SI
+    ST dimI
+    LD dimJ
+    ADD SI
+    ST dimJ
 
-    LD      #0x0
+    LD      SI
+    DEC
     ST      I
 CYCLE1:
     LD      (I)+
@@ -26,7 +35,8 @@ CYCLE1:
     CMP     I
     BLT     STP
 
-    LD      #0x0
+    LD      VAL
+    DEC
     ST      J
     CYCLE2:
         LD      (J)+
@@ -99,7 +109,7 @@ XOR:
     RET
 
     ORG     0x687
-    WORD    0x0001, 0x0002, 0x0003
+    WORD    0x0001, 0x0002, 0x0003 0x0004
     WORD    0x0004, 0x0005, 0x0006
     WORD    0x0007, 0x0008, 0x0009 
             ; 5bcf

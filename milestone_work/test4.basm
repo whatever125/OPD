@@ -1,0 +1,112 @@
+ORG 0x010
+POINTER1:
+    WORD 0x00
+POINTER2:
+    WORD 0x00
+dimI:
+    WORD 0x6
+dimJ:
+    WORD 0x11
+SI:
+    WORD 0x0
+RESULT:
+    WORD 0x00
+ADDRES:
+    WORD 0x679
+I:
+    WORD 0x0
+Y:
+    WORD 0x0
+
+ARGUMENT:
+    WORD 0x0
+
+MASK_BIT:
+    WORD 0x0200
+MASK_NEG:
+    WORD 0xFC00
+MASK_POZ:
+    WORD 0x03FF
+NEG_RAS:
+    WORD 0xFFFF
+POS_RAS:
+    WORD 0x0000
+
+RES2:
+    WORD 0x00
+RES1:
+    WORD 0x00
+
+START:
+    CLA
+    ST RESULT
+    LD ADDRES
+    ST POINTER1
+    LD dimI
+    ADD SI
+    ST dimI
+    LD dimJ
+    ADD SI
+    ST dimJ
+
+    LD SI
+    DEC
+    ST I
+LOOP:
+    LD (I)+
+    LD dimI
+    CMP I
+    BLT STP
+
+    LD SI
+    DEC
+    ST J
+    LOOP2:
+        LD (J)+
+        LD dimJ
+        CMP J
+        BLT LOOP
+
+        LD (POINTER1)+
+        ST ARGUMENT
+        CALL CHECK_ITER
+
+        JUMP LOOP2
+STP: HLT
+CHECK_ITER:
+    LD I
+    DIV2:
+        SUB #0x3
+        BZS CHECK_J
+        BNS FINISH 
+        JUMP DIV2
+CHECK_J:
+    LD J
+    DIV3:
+        SUB #0x3
+        BZS CALL_CLASS
+        BNS FINISH 
+        JUMP DIV3
+CALL_CLASS:
+    CALL FUNC
+
+FUNC:
+    LD (ARGUMENT)
+    AND MASK_BIT
+    BZS POZITIVE
+NEGATIVE:
+    OR MASK_NEG
+    ADD RES2
+    ST RES2
+    LD NEG_RAS
+    ADC RES1
+    ST RES1
+    RET
+POZITIVE:
+    AND MASK_POZ
+    ADD RES2
+    ST RES2
+    LD POS_RAS
+    ADC RES1
+    ST RES1
+    RET
